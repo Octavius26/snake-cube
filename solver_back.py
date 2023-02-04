@@ -123,14 +123,14 @@ def rec_solver( cube : T_cube,
 	
 	N = len(snake)
 	if N == stop_len :
-		print("Solution")
+		Optional._print("Solution")
 		return True,cube,0
 
 	if N < minimal_len :
-		print(N)
+		Optional._print(N)
 		minimal_len = N
 	if N == minimal_len :
-		print('#',end='')
+		Optional._print('#',end='')
 
 
 	snake = snake.copy()
@@ -151,13 +151,26 @@ def rec_solver( cube : T_cube,
 				minimal_len = minimal_len_2
 			if sol_found :
 				return True,cube_sol,0
-	if l_new_dir == [] : print(".",end='')
+	if l_new_dir == [] : Optional._print(".",end='')
 	if cube_sol is None :
 		return False,cube,minimal_len
 	return False,cube_sol,minimal_len_2
 
 
-def solve(snake:list[int],size,start_point = (0,0,0),stop_len = 0)->T_cube:
+class Optional:
+	_print = print
+
+	def print_all():
+		Optional._print = print
+	
+	def print_nothing():
+		def no_print(*args,**kwargs): return
+		Optional._print = no_print
+
+		
+def solve(snake:list[int],size,start_point = (0,0,0),stop_len = 0,print_all = True)->T_cube:
+	
+	if not print_all : Optional.print_nothing()
 	cube_init = T_cube( M = np.zeros((size,size,size), dtype=np.int8),
 					end_pointer = start_point,
 					prev_dir=None,
@@ -168,6 +181,7 @@ def solve(snake:list[int],size,start_point = (0,0,0),stop_len = 0)->T_cube:
 												snake = snake,
 												minimal_len = len(snake),
 												stop_len = stop_len)
+	print(f"\n\nminimum len found = {minimum_len}")
 	return cube_sol
 
 
